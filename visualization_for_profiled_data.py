@@ -29,7 +29,7 @@ def scatter_3d(file_path:str, attribute_list:list, html_save_path:str):
                 )
         )  # bg_color="black"
         .add(
-            series_name="Profiled Addresses",
+            series_name='''["sed_count", "receive_count", "time_interval_median(min)", "transaction_interval_cluster_label", "time_interval_std(min)"]''',
             data=data,
             xaxis3d_opts=opts.Axis3DOpts(
                 name=config_xAxis3D,
@@ -53,18 +53,24 @@ def scatter_3d(file_path:str, attribute_list:list, html_save_path:str):
                 opts.VisualMapOpts(
                     type_="color",
                     is_calculable=True,
-                    dimension= 3,
-                    pos_top= "20",
-                    max_= color_maximum/15,
+                    dimension=3,
+                    pos_top="20",
+                    max_=2,
                     range_color=[
                         "#1710c0",
-                        "#0b9df0",
-                        "#00fea8",
                         "#00ff0d",
-                        "#f5f811",
-                        "#f09a09",
                         "#fe0300",
                     ],
+                    # max_=color_maximum/15,
+                    # range_color=[
+                    #     "#1710c0",
+                    #     "#0b9df0",
+                    #     "#00fea8",
+                    #     "#00ff0d",
+                    #     "#f5f811",
+                    #     "#f09a09",
+                    #     "#fe0300",
+                    # ],
                 ),
                 opts.VisualMapOpts(
                     type_="size",
@@ -109,6 +115,8 @@ def word_cloud(file_path:str, html_save_path:str):
     for key, value in receive_store_dict.items():
         receive_data_list.append((key, str(value)))
 
+    print(send_store_dict)
+
     send_wordcloud = (
         WordCloud(
             init_opts=opts.InitOpts(
@@ -148,5 +156,5 @@ def word_cloud(file_path:str, html_save_path:str):
     )
 
 if __name__ == '__main__':
-    # scatter_3d("./transaction/profiled/CryptokittySiringAuction4000.csv", ["send_count", "receive_count", "transaction_count", "time_interval_median(min)", "send_value_mean(eth)"], "./html_output/scatter3d.html")
+    # scatter_3d("./CryptokittySiringAuction4000_further_mined.csv", ["send_count", "receive_count", "time_interval_median(min)", "transaction_interval_cluster_label", "time_interval_std(min)"], "./html_output/time_interval_cluster_result_1.html")
     word_cloud("./transaction/profiled/CryptokittySiringAuction4000.csv", "./html_output/")

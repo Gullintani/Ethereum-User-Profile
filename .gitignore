@@ -9,4 +9,5 @@ top15_data/
 transaction/
 trend_data/
 .vscode/
+html_output/
 test.py

@@ -263,7 +263,7 @@ def analysis_profile(file_path:str):
     plt.show()
 
     # DApp info
-    dict_list = df["to_cate"].values
+    dict_list = df["value_dict(eth)"].values
     store_dict = {}
     for cate_dict_str in dict_list:
         cate_dict = eval(cate_dict_str)
@@ -293,7 +293,7 @@ def apply_apriori(file_path:str):
             pass
         app_sequence.append(tuple(item))
     
-    itemsets, rules = apriori(app_sequence, min_support=0.1, min_confidence=0.1)
+    itemsets, rules = apriori(app_sequence, min_support=0.05, min_confidence=0.1)
     print(rules)
     print("===================================================================")
     print(itemsets)
@@ -302,9 +302,9 @@ def apply_apriori(file_path:str):
 if __name__ == '__main__':
 
     # apply_apriori("./transaction/profiled/CryptokittySiringAuction4000.csv")
-    # analysis_profile("./transaction/profiled/CryptokittySiringAuction4000.csv")
+    analysis_profile("./transaction/profiled/CryptokittySiringAuction4000.csv")
     # batch_add_label("./transaction/CryptokittySiringAuction_raw/", "./transaction/CryptokittySiringAuction_labeled/")
-    profile_labeled_data("./transaction/CryptokittySiringAuction_labeled/", "./transaction/profiled/CryptokittySiringAuction4000.csv", "cryptokitties")
+    # profile_labeled_data("./transaction/CryptokittySiringAuction_labeled/", "./transaction/profiled/CryptokittySiringAuction4000.csv", "cryptokitties")
     # transaction_graph("./transaction/labeled/0x4da725d81911dc6b452a79eacbe8e2df7ab4ca49_labeled.csv", "bycount")
     # composition_graph("./transaction/labeled/0xf165d353abddb7cb00052d610254249fcc12a8c7_labeled.csv", "_title")
     # wordcloud("./transaction/labeled/0x4da725d81911dc6b452a79eacbe8e2df7ab4ca49_labeled.csv", "From_title")
