@@ -3,10 +3,10 @@ import numpy as np
 import os
 from efficient_apriori import apriori
 
-def get_address_list(file_path:str):
+def get_address_list(file_path:str, save_path:str):
     df = pd.read_csv(file_path)
     address_array = np.unique(df["from"].values)
-    with open('./transaction/temp.txt', 'w') as w:
+    with open(save_path, 'w') as w:
         w.write(str(address_array.tolist()))
     return
 
@@ -30,6 +30,6 @@ def add_time_difference(file_path:str):
     return
 
 if __name__ == '__main__':
-    test()
-    # get_address_list("./transaction/0xC7af99Fe5513eB6710e6D5f44F9989dA40F27F26.csv")
+    # test()
+    get_address_list("./transaction/contract_tx_csv/nestree.csv", "./transaction/contract_tx_list/nestree.txt")
     # add_time_difference("./transaction/CryptokittySiringAuction_labeled/")

@@ -60,7 +60,8 @@ if __name__ == '__main__':
         try:
             request_entity = Contract(item)
             a = request_entity.account("txlist")
-            save_transaction_data(a, f"./transaction/CryptokittySiringAuction_raw/{ request_entity.address }.csv")
+            save_transaction_data(a, f"./transaction/social/nestree_raw/{ request_entity.address }.csv")
+            # save_transaction_data(a, f"./transaction/contract_tx_csv/nestree.csv")
         except:
             print("failed")
             index += 1

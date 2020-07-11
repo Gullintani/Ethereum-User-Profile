@@ -117,101 +117,104 @@ def profile_labeled_data(file_path:str, save_path:str, data_source:str):
     total = len(file_names)
 
     for file_name in file_names:
-        df = pd.read_csv(file_path + file_name)
-        # address, transaction count, transaction per day, from category, to category, from title, to title, transaction in/out, Average in value, Average out value, Average gas, First transaction, Interact DApp Sequence
-        # transaction count
-        transaction_count = len(df)
-        
-        # transaction per day
-        first_date = pd.Timestamp(df["timeStamp"].values[0], unit="s")
-        last_date = pd.Timestamp(df["timeStamp"].values[-1], unit="s")
-        day_between = (last_date - first_date).days
         try:
-            transaction_per_day = round(transaction_count/day_between, 2)
-        except:
-            transaction_per_day = 0
+            df = pd.read_csv(file_path + file_name)
+            # address, transaction count, transaction per day, from category, to category, from title, to title, transaction in/out, Average in value, Average out value, Average gas, First transaction, Interact DApp Sequence
+            # transaction count
+            transaction_count = len(df)
+            
+            # transaction per day
+            first_date = pd.Timestamp(df["timeStamp"].values[0], unit="s")
+            last_date = pd.Timestamp(df["timeStamp"].values[-1], unit="s")
+            day_between = (last_date - first_date).days
+            try:
+                transaction_per_day = round(transaction_count/day_between, 2)
+            except:
+                transaction_per_day = 0
 
-        # category count
-        df["from_category"] = df["from_category"].values.astype(str)
-        from_category_dict = df["from_category"].value_counts().to_dict()
+            # category count
+            df["from_category"] = df["from_category"].values.astype(str)
+            from_category_dict = df["from_category"].value_counts().to_dict()
 
-        df["to_category"] = df["to_category"].values.astype(str)
-        to_category_dict = df["to_category"].value_counts().to_dict()
+            df["to_category"] = df["to_category"].values.astype(str)
+            to_category_dict = df["to_category"].value_counts().to_dict()
+            
+            # title count
+            df["from_title"] = df["from_title"].values.astype(str)
+            from_title_dict = df["from_title"].value_counts().to_dict()
+
+            df["to_title"] = df["to_title"].values.astype(str)
+            to_title_dict = df["to_title"].value_counts().to_dict()
+
+            # transaction in/out
+            try:
+                send_count = from_category_dict["self"]
+            except:
+                send_count = 0
+
+            try:
+                receive_count = to_category_dict["self"]
+            except:
+                receive_count = 0
+
+            # value
+            send_value_mean = round(df.loc[df["from_title"] == "self", 'value'].values.astype(float).mean() / 1000000000000000000, 2)
+            receive_value_mean = round(df.loc[df["to_title"] == "self", 'value'].values.astype(float).mean() / 1000000000000000000, 2)
+            
+            # average gas
+            average_gas = round(df["gasUsed"].mean(), 2)
+
+            # first transaction made
+            # up there first_date
+
+            # Interact App Sequence
+            app_sequence = []
+            for app in df["to_title"].values:
+                app = str(app)
+                if app not in app_sequence:
+                    app_sequence.append(app)
+
+            # time interval info
+            timestamp_array = df["timeStamp"].values
+            time_interval_list = []
+            for i in range(1, len(timestamp_array)):
+                time_interval_list.append(timestamp_array[i] - timestamp_array[i-1])
+
+            IRQ = np.percentile(time_interval_list, 75) - np.percentile(time_interval_list, 25)
+            lower_bound = np.percentile(time_interval_list, 25) - 1.5 * IRQ
+            upper_bound = np.percentile(time_interval_list, 75) + 1.5 * IRQ
+
+            new_list = []
+            for item in time_interval_list:
+                if item > lower_bound and item < upper_bound:
+                    new_list.append(item/60)
+
+            time_interval_mean = round(np.mean(new_list), 2)
+            time_interval_std = round(np.std(new_list), 2)
+            tiem_interval_median = round(np.median(new_list), 2)
+
+            # transaction value by category
+            receive_value_mean = df.loc[df["to_title"] == "self", 'value'].values.astype(float).mean()
+
+            # Collected from
+            to_category_value_dict = {}
+            to_category_list = np.unique(df["to_category"].values)
+            for category in to_category_list:
+                category_value_sum = np.sum(df.loc[df["to_category"] == category, 'value'].values.astype(float))
+                category_value_sum = round(category_value_sum / 1000000000000000000, 2)
+                to_category_value_dict[category] = category_value_sum
+            
+
+            # Collect source
+            source = data_source
+
+            # address, transaction count, transaction per day, from category, to category, from title, to title, transaction in/out, Average in value, Average out value Average gas, First transaction, Interact DApp Sequence
+            store_list.append([file_name[:-12], source, transaction_count, transaction_per_day, time_interval_mean, tiem_interval_median, time_interval_std, from_category_dict, to_category_dict, from_title_dict, to_title_dict, send_count, receive_count, send_value_mean, receive_value_mean, to_category_value_dict, average_gas, first_date, app_sequence])
+            print(f" { file_name } collected: { index }/ { total }")
+            index += 1
         
-        # title count
-        df["from_title"] = df["from_title"].values.astype(str)
-        from_title_dict = df["from_title"].value_counts().to_dict()
-
-        df["to_title"] = df["to_title"].values.astype(str)
-        to_title_dict = df["to_title"].value_counts().to_dict()
-
-        # transaction in/out
-        try:
-            send_count = from_category_dict["self"]
         except:
-            send_count = 0
-
-        try:
-            receive_count = to_category_dict["self"]
-        except:
-            receive_count = 0
-
-        # value
-        send_value_mean = round(df.loc[df["from_title"] == "self", 'value'].values.astype(float).mean() / 1000000000000000000, 2)
-        receive_value_mean = round(df.loc[df["to_title"] == "self", 'value'].values.astype(float).mean() / 1000000000000000000, 2)
-        
-        # average gas
-        average_gas = round(df["gasUsed"].mean(), 2)
-
-        # first transaction made
-        # up there first_date
-
-        # Interact App Sequence
-        app_sequence = []
-        for app in df["to_title"].values:
-            app = str(app)
-            if app not in app_sequence:
-                app_sequence.append(app)
-
-        # time interval info
-        timestamp_array = df["timeStamp"].values
-        time_interval_list = []
-        for i in range(1, len(timestamp_array)):
-            time_interval_list.append(timestamp_array[i] - timestamp_array[i-1])
-
-        IRQ = np.percentile(time_interval_list, 75) - np.percentile(time_interval_list, 25)
-        lower_bound = np.percentile(time_interval_list, 25) - 1.5 * IRQ
-        upper_bound = np.percentile(time_interval_list, 75) + 1.5 * IRQ
-
-        new_list = []
-        for item in time_interval_list:
-            if item > lower_bound and item < upper_bound:
-                new_list.append(item/60)
-
-        time_interval_mean = round(np.mean(new_list), 2)
-        time_interval_std = round(np.std(new_list), 2)
-        tiem_interval_median = round(np.median(new_list), 2)
-
-        # transaction value by category
-        receive_value_mean = df.loc[df["to_title"] == "self", 'value'].values.astype(float).mean()
-
-        # Collected from
-        to_category_value_dict = {}
-        to_category_list = np.unique(df["to_category"].values)
-        for category in to_category_list:
-            category_value_sum = np.sum(df.loc[df["to_category"] == category, 'value'].values.astype(float))
-            category_value_sum = round(category_value_sum / 1000000000000000000, 2)
-            to_category_value_dict[category] = category_value_sum
-        
-
-        # Collect source
-        source = data_source
-
-        # address, transaction count, transaction per day, from category, to category, from title, to title, transaction in/out, Average in value, Average out value Average gas, First transaction, Interact DApp Sequence
-        store_list.append([file_name[:-12], source, transaction_count, transaction_per_day, time_interval_mean, tiem_interval_median, time_interval_std, from_category_dict, to_category_dict, from_title_dict, to_title_dict, send_count, receive_count, send_value_mean, receive_value_mean, to_category_value_dict, average_gas, first_date, app_sequence])
-        print(f" { file_name } collected: { index }/ { total }")
-        index += 1
-
+            print("Error Happened")
         # break
 
     store_array = np.array(store_list)
@@ -302,9 +305,9 @@ def apply_apriori(file_path:str):
 if __name__ == '__main__':
 
     # apply_apriori("./transaction/profiled/CryptokittySiringAuction4000.csv")
-    analysis_profile("./transaction/profiled/CryptokittySiringAuction4000.csv")
-    # batch_add_label("./transaction/CryptokittySiringAuction_raw/", "./transaction/CryptokittySiringAuction_labeled/")
-    # profile_labeled_data("./transaction/CryptokittySiringAuction_labeled/", "./transaction/profiled/CryptokittySiringAuction4000.csv", "cryptokitties")
+    # analysis_profile("./transaction/profiled/CryptokittySiringAuction4000.csv")
+    batch_add_label("./transaction/social/nestree_raw/", "./transaction/social/nestree_labeled/")
+    profile_labeled_data("./transaction/social/nestree_labeled/", "./transaction/profiled/nestree1500.csv", "nestree")
     # transaction_graph("./transaction/labeled/0x4da725d81911dc6b452a79eacbe8e2df7ab4ca49_labeled.csv", "bycount")
     # composition_graph("./transaction/labeled/0xf165d353abddb7cb00052d610254249fcc12a8c7_labeled.csv", "_title")
     # wordcloud("./transaction/labeled/0x4da725d81911dc6b452a79eacbe8e2df7ab4ca49_labeled.csv", "From_title")
