@@ -53,15 +53,17 @@ class Contract:
         return
 
 if __name__ == '__main__':
-    address_list = []
+    df = pd.read_csv("./etherscan_top_account.csv")
+    address_list = df["Address"].values[0:2500]
+    # =====================================================================================
     index = 1
     total = len(address_list)
     for item in address_list:
         try:
             request_entity = Contract(item)
             a = request_entity.account("txlist")
-            save_transaction_data(a, f"./transaction/social/nestree_raw/{ request_entity.address }.csv")
-            # save_transaction_data(a, f"./transaction/contract_tx_csv/nestree.csv")
+            save_transaction_data(a, f"./top10000_raw/{ request_entity.address }.csv")
+            # save_transaction_data(a, f"./transaction/contract_tx_csv/axie_infinity.csv")
         except:
             print("failed")
             index += 1

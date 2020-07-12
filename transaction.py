@@ -242,15 +242,30 @@ def analysis_profile(file_path:str):
     # fig4, ax4 = plt.subplots()
     # ax4.set_title('receive value')
     # ax4.boxplot(df["receive_value_mean"].values)
-
-    # print("Average transaction count: " + str(df["transaction_count"].values.mean()))
-    # print("Average send count: " + str(df["send_count"].values.mean()))
-    # print("Average receive count: " + str(df["receive_count"].values.mean()))
-    # print("Average transaction per day: " + str(df["transaction_per_day"].values.mean()))
-    # print("Average send value(wei): " + str(df["send_value_mean"].values.mean()))
-    # print("Average receive value(wei): " + str(df["receive_value_mean"].values.mean()))
+    print("==========================Transaction Info==============================")
+    print("Average transaction count: " + str(df["transaction_count"].values.mean()))
+    print("Average send count: " + str(df["send_count"].values.mean()))
+    print("Average receive count: " + str(df["receive_count"].values.mean()))
+    print("Average transaction per day: " + str(df["transaction_per_day"].values.mean()))
+    print("Average send value(eth): " + str(df["send_value_mean(eth)"].values.mean()))
+    print("Average receive value(eth): " + str(df["receive_value_mean(eth)"].values.mean()))
     # plt.show()
     
+    # DApp info
+    attribute_list = ["value_dict(eth)", "from_cate", "to_cate", "from_title", "to_title"]
+    for attribute in attribute_list:
+        dict_list = df[attribute].values
+        store_dict = {}
+        for cate_dict_str in dict_list:
+            cate_dict = eval(cate_dict_str)
+            for k, v in cate_dict.items():
+                if k in store_dict.keys():
+                        store_dict[k] += v
+                else:
+                    store_dict[k] = v
+        print(f"=========================={ attribute }==============================")
+        print(store_dict)
+
     # First transaction date
     df_date_index = df
     df_date_index['first_date'] = pd.to_datetime(df['first_date'])
@@ -265,18 +280,6 @@ def analysis_profile(file_path:str):
     ax1.set_title('created year')
     plt.show()
 
-    # DApp info
-    dict_list = df["value_dict(eth)"].values
-    store_dict = {}
-    for cate_dict_str in dict_list:
-        cate_dict = eval(cate_dict_str)
-        for k, v in cate_dict.items():
-            if k in store_dict.keys():
-                    store_dict[k] += v
-            else:
-                store_dict[k] = v
-    print(store_dict)
-    # plt.show()
     return
 
 def apply_apriori(file_path:str):
@@ -305,9 +308,9 @@ def apply_apriori(file_path:str):
 if __name__ == '__main__':
 
     # apply_apriori("./transaction/profiled/CryptokittySiringAuction4000.csv")
-    # analysis_profile("./transaction/profiled/CryptokittySiringAuction4000.csv")
-    batch_add_label("./transaction/social/nestree_raw/", "./transaction/social/nestree_labeled/")
-    profile_labeled_data("./transaction/social/nestree_labeled/", "./transaction/profiled/nestree1500.csv", "nestree")
+    # analysis_profile("./transaction/profiled/sum.csv")
+    # batch_add_label("./transaction/game/axie_infinity_raw/", "./transaction/game/axie_infinity_labeled/")
+    profile_labeled_data("./transaction/game/CryptoDozer_labeled/", "./transaction/profiled/game/CryptoDozer2000.csv", "CryptoDozer")
     # transaction_graph("./transaction/labeled/0x4da725d81911dc6b452a79eacbe8e2df7ab4ca49_labeled.csv", "bycount")
     # composition_graph("./transaction/labeled/0xf165d353abddb7cb00052d610254249fcc12a8c7_labeled.csv", "_title")
     # wordcloud("./transaction/labeled/0x4da725d81911dc6b452a79eacbe8e2df7ab4ca49_labeled.csv", "From_title")
