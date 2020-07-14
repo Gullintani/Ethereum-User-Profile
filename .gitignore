@@ -10,4 +10,5 @@ transaction/
 trend_data/
 .vscode/
 html_output/
+ml_data/
 test.py
