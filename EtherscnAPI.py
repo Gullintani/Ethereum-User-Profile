@@ -54,7 +54,7 @@ class Contract:
 
 if __name__ == '__main__':
     df = pd.read_csv("./etherscan_top_account.csv")
-    address_list = df["Address"].values[0:2500]
+    address_list = df["Address"].values[7500:10000] #20200712 18:00 from 0 to 2500
     # =====================================================================================
     index = 1
     total = len(address_list)

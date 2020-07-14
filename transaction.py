@@ -308,9 +308,9 @@ def apply_apriori(file_path:str):
 if __name__ == '__main__':
 
     # apply_apriori("./transaction/profiled/CryptokittySiringAuction4000.csv")
-    # analysis_profile("./transaction/profiled/sum.csv")
-    # batch_add_label("./transaction/game/axie_infinity_raw/", "./transaction/game/axie_infinity_labeled/")
-    profile_labeled_data("./transaction/game/CryptoDozer_labeled/", "./transaction/profiled/game/CryptoDozer2000.csv", "CryptoDozer")
+    analysis_profile("./transaction/profiled/top10000.csv")
+    # batch_add_label("./top10000_raw/", "./top10000_labeled/")
+    # profile_labeled_data("./transaction/top10000_labeled/", "./transaction/profiled/top10000.csv", "top10000")
     # transaction_graph("./transaction/labeled/0x4da725d81911dc6b452a79eacbe8e2df7ab4ca49_labeled.csv", "bycount")
     # composition_graph("./transaction/labeled/0xf165d353abddb7cb00052d610254249fcc12a8c7_labeled.csv", "_title")
     # wordcloud("./transaction/labeled/0x4da725d81911dc6b452a79eacbe8e2df7ab4ca49_labeled.csv", "From_title")
