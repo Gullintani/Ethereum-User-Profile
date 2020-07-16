@@ -1,7 +1,39 @@
 import pandas as pd
 import numpy as np
 import pyecharts.options as opts
-from pyecharts.charts import Scatter3D, WordCloud, Grid
+from pyecharts.charts import Scatter, Scatter3D, WordCloud, Grid
+
+def scatter_2d(file_path:str, html_save_path:str):
+    df = pd.read_csv(file_path)[["0", "1"]]
+    data = df.values
+    # data.sort(key=lambda x: x[0])
+    x_data = [d[0] for d in data]
+    y_data = [d[1] for d in data]
+
+    (
+        Scatter(init_opts=opts.InitOpts(width="1600px", height="1000px"))
+        .add_xaxis(xaxis_data=x_data)
+        .add_yaxis(
+            series_name="",
+            y_axis=y_data,
+            symbol_size=20,
+            label_opts=opts.LabelOpts(is_show=False),
+        )
+        .set_series_opts()
+        .set_global_opts(
+            xaxis_opts=opts.AxisOpts(
+                type_="value", splitline_opts=opts.SplitLineOpts(is_show=True)
+            ),
+            yaxis_opts=opts.AxisOpts(
+                type_="value",
+                axistick_opts=opts.AxisTickOpts(is_show=True),
+                splitline_opts=opts.SplitLineOpts(is_show=True),
+            ),
+            tooltip_opts=opts.TooltipOpts(is_show=False),
+        )
+        .render(html_save_path)
+    )
+    return
 
 def scatter_3d(file_path:str, attribute_list:list, html_save_path:str):
 
@@ -55,7 +87,7 @@ def scatter_3d(file_path:str, attribute_list:list, html_save_path:str):
                     is_calculable=True,
                     dimension=3,
                     pos_top="20",
-                    max_=color_maximum,
+                    max_=2,
                     range_color=[
                         "#1710c0",
                         "#00ff0d",
@@ -155,12 +187,17 @@ def word_cloud(file_path:str, html_save_path:str):
         .render(html_save_path+"wordcloud_receive.html")
     )
 
+
 if __name__ == '__main__':
     num_attr_list = ["transaction_count", "transaction_per_day", "time_interval_mean(min)", "time_interval_median(min)", "time_interval_std(min)", "send_count", "receive_count", "send_value_mean(eth)", "receive_value_mean(eth)", "average_gas"]
     time_attr_list = ["transaction_count", "transaction_per_day", "time_interval_mean(min)", "time_interval_median(min)", "time_interval_std(min)"]
-    new_columns_list = ["self_count", "nan_count", "defi_cound", "exchanges_count", "other_count", "gambling_count", "games_count", "marketplaces_count", "social_count", "high-risk_count", "collectibles_count", "self_value", "nan_value", "defi_cound", "exchanges_value", "other_value", "gambling_value", "games_value", "marketplaces_value", "social_value", "high-risk_value", "collectibles_value"]
+    new_columns_list = ["self_count", "nan_count", "defi_count", "exchanges_count", "other_count", "gambling_count", "games_count", "marketplaces_count", "social_count", "high-risk_count", "collectibles_count", "self_value", "nan_value", "defi_value", "exchanges_value", "other_value", "gambling_value", "games_value", "marketplaces_value", "social_value", "high-risk_value", "collectibles_value"]
     
-    scatter_3d("./ml_data/processed_sum_std.csv", ["games_count", "gambling_count", "exchanges_count", "transaction_count", "send_value_mean(eth)"], "./html_output/scatter_sum_std_2.html")
+    scatter_2d("./ml_data/processed_sum_pca_2.csv", "./html_output/pca2_1.html")
+    # scatter_3d("./ml_data/processed_sum_pca_3.csv", ["0", "1", "2", "1", "1"], "./html_output/pca3_1.html")
+    # scatter_3d("./ml_data/labeled_1_sum.csv", ["send_count", "receive_count", "transaction_count", "cluster_label", "send_value_mean(eth)"], "./html_output/scatter_sum_std_6.html")
+    # scatter_3d("./ml_data/labeled_1_sum.csv", ["send_count", "receive_count", "transaction_count", "cluster_label", "send_value_mean(eth)"], "./html_output/scatter_sum_std_4.html")
+    # scatter_3d("./ml_data/processed_sum_std.csv", ["games_value", "gambling_value", "exchanges_value", "transaction_count", "send_value_mean(eth)"], "./html_output/scatter_sum_std_4.html")
     # scatter_3d("./further_mined_sum.csv", ["send_count", "receive_count", "transaction_count", "transaction_interval_cluster_label", "time_interval_std(min)"], "./html_output/time_interval_cluster_result_2.html")
     # scatter_3d("./further_mined_sum_std.csv", ["send_count", "receive_count", "transaction_count", "time_interval_median(min)", "send_value_mean(eth)"], "./html_output/time_interval_cluster_result_3.html")
     # scatter_3d("./transaction/profiled/top10000.csv", ["send_count", "receive_count", "transaction_count", "time_interval_median(min)", "send_value_mean(eth)"], "./html_output/scatter_top10000.html")

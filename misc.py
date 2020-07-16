@@ -18,11 +18,8 @@ def test():
     # print(type(transactions[0]))
     # itemsets, rules = apriori(transactions, min_support=0.5, min_confidence=1)
     # print(rules)  # [{eggs} -> {bacon}, {soup} -> {bacon}]
-    test = [1,2,3,4,5,6,7,8,9,10,11,12,13,14]
-    for i in range(0,len(test)):
-        if test[i]<5:
-            test.pop(i)
-    print(test)
+    
+    print(list(range(2)))
 
 def add_time_difference(file_path:str):
     file_names = os.listdir(file_path)
@@ -44,7 +41,7 @@ def concate_profiled_record(file_path:str, save_path:str):
     return
 
 if __name__ == '__main__':
-    concate_profiled_record("./transaction/profiled/sum/", "./transaction/profiled/sum.csv")
-    # test()
-    # get_address_list("./transaction/contract_tx_csv/axie_infinity.csv", "./transaction/contract_tx_list/axie_infinity.txt")
+    # concate_profiled_record("./transaction/profiled/sum/", "./transaction/profiled/sum.csv")
+    test()
+    # get_address_list("./transaction/contract_tx_csv/GodsUnchained2.csv", "./transaction/contract_tx_list/GodsUnchained2.txt")
     # add_time_difference("./transaction/CryptokittySiringAuction_labeled/")

@@ -1,5 +1,5 @@
 # Powered by Etherscan.io APIs
-import requests
+import requests, os
 import pandas as pd
 import numpy as np
 
@@ -45,7 +45,7 @@ class Contract:
             return self.r_process(r)
         else:
             api_link = api_link + f"&startblock={ startblock }&endblock={ endblock }&sort=asc" + f"&apikey={ self.api_key }"
-            r = requests.get(api_link, timeout=60).text
+            r = requests.get(api_link, timeout=15).text
             return self.r_process(r)
         return
 
@@ -53,23 +53,48 @@ class Contract:
         return
 
 if __name__ == '__main__':
-    df = pd.read_csv("./etherscan_top_account.csv")
-    address_list = df["Address"].values[7500:10000] #20200712 18:00 from 0 to 2500
+    # df = pd.read_csv("./etherscan_top_account.csv")
+    # address_list = df["Address"].values[7500:10000] #20200712 18:00 from 0 to 2500
     # =====================================================================================
-    index = 1
-    total = len(address_list)
-    for item in address_list:
-        try:
-            request_entity = Contract(item)
-            a = request_entity.account("txlist")
-            save_transaction_data(a, f"./top10000_raw/{ request_entity.address }.csv")
-            # save_transaction_data(a, f"./transaction/contract_tx_csv/axie_infinity.csv")
-        except:
-            print("failed")
+    path = "./contract_db/contract_transaction/"
+    file_names = os.listdir(path)
+    file_index = 1
+    file_total = len(file_names)
+    for file_name in file_names:
+        df = pd.read_csv(path+file_name)
+        address_list = df["from"].values
+        index = 1
+        total = len(address_list)
+        for item in address_list:
+            try:
+                request_entity = Contract(item)
+                a = request_entity.account("txlist")
+                save_transaction_data(a, f"./transaction/supermix_raw/{ request_entity.address }.csv")
+                # save_transaction_data(a, f"./transaction/game/GodsUnchained_raw/{ request_entity.address }.csv")
+                # save_transaction_data(a, f"./transaction/contract_tx_csv/GodsUnchained2.csv")
+            except:
+                print(f"failed:{file_index}/{ file_total }; in_file transaction:{ index }/{ total }")
+                index += 1
+                continue
+            print(f"processed file:{file_index}/{ file_total }; in_file transaction:{ index }/{ total }")
             index += 1
-            continue
-        print(f"processed { index }/{ total }")
-        index += 1
+        file_index += 1
+    # =====================================================================================
+    # index = 1
+    # total = len(address_list)
+    # for item in address_list:
+    #     try:
+    #         request_entity = Contract(item)
+    #         a = request_entity.account("txlist")
+    #         save_transaction_data(a, f"./contract_db/contract_transaction/{ request_entity.address }.csv")
+    #         # save_transaction_data(a, f"./transaction/game/GodsUnchained_raw/{ request_entity.address }.csv")
+    #         # save_transaction_data(a, f"./transaction/contract_tx_csv/GodsUnchained2.csv")
+    #     except:
+    #         print("failed")
+    #         index += 1
+    #         continue
+    #     print(f"processed { index }/{ total }")
+    #     index += 1
     
     
     # request_entity = Contract("0xC7af99Fe5513eB6710e6D5f44F9989dA40F27F26")
