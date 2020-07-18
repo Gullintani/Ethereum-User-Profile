@@ -87,29 +87,29 @@ def scatter_3d(file_path:str, attribute_list:list, html_save_path:str):
                     is_calculable=True,
                     dimension=3,
                     pos_top="20",
-                    max_=2,
-                    range_color=[
-                        "#1710c0",
-                        "#00ff0d",
-                        "#fe0300",
-                    ],
-                    # max_=color_maximum/15,
+                    # max_=2,
                     # range_color=[
                     #     "#1710c0",
-                    #     "#0b9df0",
-                    #     "#00fea8",
                     #     "#00ff0d",
-                    #     "#f5f811",
-                    #     "#f09a09",
                     #     "#fe0300",
                     # ],
+                    max_=color_maximum/8000,
+                    range_color=[
+                        "#1710c0",
+                        "#0b9df0",
+                        "#00fea8",
+                        "#00ff0d",
+                        "#f5f811",
+                        "#f09a09",
+                        "#fe0300",
+                    ],
                 ),
                 opts.VisualMapOpts(
                     type_="size",
                     is_calculable=True,
                     dimension=4,
                     pos_bottom="20",
-                    max_=size_max,
+                    max_=size_max/15000,
                     range_size=[10, 50],
                 ),
             ]
@@ -193,7 +193,15 @@ if __name__ == '__main__':
     time_attr_list = ["transaction_count", "transaction_per_day", "time_interval_mean(min)", "time_interval_median(min)", "time_interval_std(min)"]
     new_columns_list = ["self_count", "nan_count", "defi_count", "exchanges_count", "other_count", "gambling_count", "games_count", "marketplaces_count", "social_count", "high-risk_count", "collectibles_count", "self_value", "nan_value", "defi_value", "exchanges_value", "other_value", "gambling_value", "games_value", "marketplaces_value", "social_value", "high-risk_value", "collectibles_value"]
     
-    scatter_2d("./ml_data/processed_sum_pca_2.csv", "./html_output/pca2_1.html")
+    # scatter_2d("./ml_data/processed_sum_pca_2.csv", "./html_output/pca2_1.html")
+
+    # Top 25 contract transaction info
+    # scatter_3d("./transaction/profiled/all_cate_top25_transaction_profiled.csv", ["transaction_count", "time_interval_mean(min)", "time_interval_median(min)", "time_interval_std(min)", "send_value_mean(eth)"], "./html_output/scatter_top25_DApp_contract1.html")
+    # scatter_3d("./transaction/profiled/all_cate_top25_transaction_profiled.csv", ["send_count", "receive_count", "transaction_per_day", "time_interval_std(min)", "send_value_mean(eth)"], "./html_output/scatter_DApp_contract2.html")
+
+    # All contract transaction info
+    # scatter_3d("./contract_db/contract_transaction_profiled.csv", ["send_count", "receive_count", "transaction_per_day", "time_interval_std(min)", "send_value_mean(eth)"], "./html_output/scatter_DApp_contract2.html")
+    
     # scatter_3d("./ml_data/processed_sum_pca_3.csv", ["0", "1", "2", "1", "1"], "./html_output/pca3_1.html")
     # scatter_3d("./ml_data/labeled_1_sum.csv", ["send_count", "receive_count", "transaction_count", "cluster_label", "send_value_mean(eth)"], "./html_output/scatter_sum_std_6.html")
     # scatter_3d("./ml_data/labeled_1_sum.csv", ["send_count", "receive_count", "transaction_count", "cluster_label", "send_value_mean(eth)"], "./html_output/scatter_sum_std_4.html")

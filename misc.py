@@ -3,6 +3,15 @@ import numpy as np
 import os
 from efficient_apriori import apriori
 
+def rename(file_path:str):
+    file_names = os.listdir(file_path)
+    for file_name in file_names:
+        if " " in file_name:
+            new_name = file_name.replace(" ", "")
+            os.rename(file_path+file_name, file_path+new_name)
+    print("Complete")
+    return
+
 def get_address_list(file_path:str, save_path:str):
     df = pd.read_csv(file_path)
     address_array = np.unique(df["from"].values)
@@ -40,8 +49,26 @@ def concate_profiled_record(file_path:str, save_path:str):
     print(f"concated {len(file_names)} files.")
     return
 
+def move_top10(from_path, save_path, name_list):
+    df = pd.read_csv(name_list)
+    target_list = df["title"].values
+    # print(target_list)
+    file_names = os.listdir(from_path)
+    index = 1
+    for file_name in file_names:
+        file_key_word = file_name.split("_")[1].lower()
+        # print(file_key_word)
+        for target in target_list:
+            if file_key_word in target:
+                os.system(f"cp { from_path + file_name } {save_path + file_name}")
+                print(index)
+                index += 1 
+    return
+
 if __name__ == '__main__':
+    move_top10("./transaction/all_cate_top25_transaction/", "./transaction/all_cate_top10_transaction/", "./contract_db/all_cate_top10_index.csv")
+    # rename("./contract_db/all_cate_top25/")
     # concate_profiled_record("./transaction/profiled/sum/", "./transaction/profiled/sum.csv")
-    test()
+    # test()
     # get_address_list("./transaction/contract_tx_csv/GodsUnchained2.csv", "./transaction/contract_tx_list/GodsUnchained2.txt")
     # add_time_difference("./transaction/CryptokittySiringAuction_labeled/")

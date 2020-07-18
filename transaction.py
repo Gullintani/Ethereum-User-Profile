@@ -206,6 +206,7 @@ def profile_labeled_data(file_path:str, save_path:str, data_source:str):
             
 
             # Collect source
+            # source = file_name.split("_")[0]
             source = data_source
 
             # address, transaction count, transaction per day, from category, to category, from title, to title, transaction in/out, Average in value, Average out value Average gas, First transaction, Interact DApp Sequence
@@ -308,9 +309,16 @@ def apply_apriori(file_path:str):
 if __name__ == '__main__':
 
     # apply_apriori("./transaction/profiled/CryptokittySiringAuction4000.csv")
+
+    # analysis_profile("./contract_db/contract_transaction_profiled.csv")
     # analysis_profile("./transaction/profiled/top10000.csv")
-    # batch_add_label("./transaction/game/GodsUnchained_raw/", "./transaction/game/GodsUnchained_labeled/")
-    profile_labeled_data("./transaction/game/Etheremon_labeled/", "./transaction/profiled/Etheremon1200.csv", "Etheremon")
+
+    # batch_add_label("./contract_db/contract_transaction/", "./contract_db/contract_transaction_labeled/")
+    # batch_add_label("./transaction/all_cate_top25_transaction/", "./transaction/all_cate_top25_transaction_labeled/")
+
+    profile_labeled_data("./transaction/all_cate_top25_transaction_labeled/", "./transaction/profiled/all_cate_top25_transaction_profiled.csv", "DAppContract")
+    # profile_labeled_data("./transaction/all_cate_top25_transaction/", "./transaction/profiled/Etheremon1200.csv", "Etheremon")
+    
     # transaction_graph("./transaction/labeled/0x4da725d81911dc6b452a79eacbe8e2df7ab4ca49_labeled.csv", "bycount")
     # composition_graph("./transaction/labeled/0xf165d353abddb7cb00052d610254249fcc12a8c7_labeled.csv", "_title")
     # wordcloud("./transaction/labeled/0x4da725d81911dc6b452a79eacbe8e2df7ab4ca49_labeled.csv", "From_title")

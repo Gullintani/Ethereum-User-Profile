@@ -10,7 +10,6 @@ from pandas import DataFrame
 def build_db(input_path:str, save_path:str):
         df = pd.read_csv(input_path)
         index_list = df['index'].values
-        index_list = index_list[536:]
         scrape_dappradar(index_list, save_path)
         return
 
@@ -131,5 +130,5 @@ def ScrapeData(dict, save_path):
 if __name__ == '__main__':
         # ScrapeData(id_dict, './csv_data/tron/highrisk/')
         # ScrapeData(id_dict, './top15_data/highrisk/')
-        build_db('./contract_db/eth_index.csv','./contract_db/eth/')
+        build_db('./contract_db/all_cate_top25_index.csv','./contract_db/all_cate_top25/')
 
