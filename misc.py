@@ -65,8 +65,59 @@ def move_top10(from_path, save_path, name_list):
                 index += 1 
     return
 
+def concate_all_cate_top_transaction(from_path, save_path):
+    file_names = os.listdir(from_path)
+    i = 1
+    total = len(file_names)
+    DF = pd.DataFrame(index=None, columns = ["blockNumber", "timeStamp", "hash", "from", "to", "value", "gas", "gasPrice", "contractAddress", "gasUsed", "isError", "category", "title"])
+    for file_name in file_names:
+        df = pd.read_csv(from_path+file_name)
+        name_content_list = file_name.split("_")
+        df.drop_duplicates("from", "first", inplace = True)
+        df["category"] = name_content_list[0]
+        df["title"] = "".join(name_content_list[1:-1])
+        DF = pd.concat([DF, df])
+        print(f"processed: { i}/{total }")
+        i += 1
+
+    DF = DF[["blockNumber","timeStamp","hash","from","to","value","gas","gasPrice","contractAddress","gasUsed","isError","category","title"]]
+    DF.to_csv(save_path)
+    print("========================================")
+    print(f"concated {len(file_names)} files.")
+    return
+
+def analysis_all_cate_top_transaction(from_path):
+    df = pd.read_csv(from_path)
+    # df.drop_duplicates(subset="from", inplace=True)
+    # print(df["category"].value_counts())
+    print("=======================================")
+    from_address_list = df["from"].values
+    print(len(np.unique(from_address_list)))
+    print(len(from_address_list))
+    print("=======================================")
+    # to_address_list = df["to"].values
+    # print(len(np.unique(to_address_list)))
+    # print(len(to_address_list))
+    # print(df["title"].value_counts())
+
+    # df1 = df.iloc[:47969, :]
+    # df1.to_csv("./transaction/all_cate_top10_transaction_simplified_1.csv")
+    # del df1
+    # df2 = df.iloc[47969:95939, :]
+    # df2.to_csv("./transaction/all_cate_top10_transaction_simplified_2.csv")
+    # del df2
+    # df3 = df.iloc[95939:143908, :]
+    # df3.to_csv("./transaction/all_cate_top10_transaction_simplified_3.csv")
+    # del df3
+    # df4 = df.iloc[143908:, :]
+    # df4.to_csv("./transaction/all_cate_top10_transaction_simplified_4.csv")
+    return
+
 if __name__ == '__main__':
-    move_top10("./transaction/all_cate_top25_transaction/", "./transaction/all_cate_top10_transaction/", "./contract_db/all_cate_top10_index.csv")
+    analysis_all_cate_top_transaction("./transaction/all_cate_top10_transaction_simplified_4.csv")
+    # concate_all_cate_top_transaction("./transaction/all_cate_top10_transaction/", "./transaction/all_cate_top10_transaction_simplified.csv")
+    # move_top10("./transaction/all_cate_top25_transaction/", "./transaction/all_cate_top5_transaction/", "./contract_db/all_cate_top5_index.csv")
+    
     # rename("./contract_db/all_cate_top25/")
     # concate_profiled_record("./transaction/profiled/sum/", "./transaction/profiled/sum.csv")
     # test()
