@@ -86,14 +86,32 @@ def concate_all_cate_top_transaction(from_path, save_path):
     print(f"concated {len(file_names)} files.")
     return
 
+def concate_labeled_transaction(from_path, save_path):
+    file_names = os.listdir(from_path)
+    i = 1
+    total = len(file_names)
+    df = pd.read_csv(from_path + file_names[1])
+    df.to_csv(save_path)
+    for file_name in file_names[1:]:
+        df = pd.read_csv(from_path+file_name)
+        df.to_csv(save_path, index=False, header=False, mode='a+')
+        print(f"processed: { i }/{total }")
+        i += 1
+
+    print("========================================")
+    print(f"concated {len(file_names)} files.")
+    return
+
 def analysis_all_cate_top_transaction(from_path):
-    df = pd.read_csv(from_path)
+    df = pd.read_csv(from_path, dtype={'timeStamp':int, 'from':object, 'to':object, 'value':float, 'contractAddress':object, 'gasUsed':float,
+       'from_title':object, 'to_title':object, 'from_category':object, 'to_category':object})
+    print(df.dtypes)
     # df.drop_duplicates(subset="from", inplace=True)
     # print(df["category"].value_counts())
     print("=======================================")
     from_address_list = df["from"].values
-    print(len(np.unique(from_address_list)))
-    print(len(from_address_list))
+    print(f"unique address: { len(np.unique(from_address_list)) }")
+    print(f"total transaction: { len(from_address_list) }")
     print("=======================================")
     # to_address_list = df["to"].values
     # print(len(np.unique(to_address_list)))
@@ -114,7 +132,10 @@ def analysis_all_cate_top_transaction(from_path):
     return
 
 if __name__ == '__main__':
-    analysis_all_cate_top_transaction("./transaction/all_cate_top10_transaction_simplified_4.csv")
+    # concate_labeled_transaction("./transaction/game/all_game_labeled/","./transaction/game/all_game_labeled.csv")
+    analysis_all_cate_top_transaction("./transaction/game/all_game_labeled.csv")
+
+    # analysis_all_cate_top_transaction("./transaction/all_cate_top10_transaction_simplified_4.csv")
     # concate_all_cate_top_transaction("./transaction/all_cate_top10_transaction/", "./transaction/all_cate_top10_transaction_simplified.csv")
     # move_top10("./transaction/all_cate_top25_transaction/", "./transaction/all_cate_top5_transaction/", "./contract_db/all_cate_top5_index.csv")
     
