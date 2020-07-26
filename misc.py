@@ -131,9 +131,32 @@ def analysis_all_cate_top_transaction(from_path):
     # df4.to_csv("./transaction/all_cate_top10_transaction_simplified_4.csv")
     return
 
+def replace_NAN_in_title_attr(file_path:str, save_path:str):
+    df = pd.read_csv(file_path, dtype={'timeStamp':int, 'from':object, 'to':object, 'value':float, 'contractAddress':object, 'gasUsed':float, 'from_title':object, 'to_title':object, 'from_category':object, 'to_category':object})
+    df = df.fillna("NAN")
+
+    index = 1
+    total = len(df)
+    for index, row in df.iterrows():
+        if row["from_title"] == "NAN":
+            df.loc[index, "from_title"] = df.loc[index, "from"]
+        if row["to_title"] == "NAN":
+            df.loc[index, "to_title"] = df.loc[index, "to"]
+        if row["from_category"] == "NAN":
+            df.loc[index, "from_category"] = df.loc[index, "from"]
+        if row["to_category"] == "NAN":
+            df.loc[index, "to_category"] = df.loc[index, "to"]
+        
+        print(f"replaced NAN with address {index }/{total}")
+        index += 1
+    df.to_csv(save_path, index=False)
+    return
+
 if __name__ == '__main__':
+    replace_NAN_in_title_attr("./transaction/experiment/experiment.csv", "./transaction/experiment/experiment_replaced_NAN.csv")
+    
     # concate_labeled_transaction("./transaction/game/all_game_labeled/","./transaction/game/all_game_labeled.csv")
-    analysis_all_cate_top_transaction("./transaction/game/all_game_labeled.csv")
+    # analysis_all_cate_top_transaction("./transaction/game/all_game_labeled.csv")
 
     # analysis_all_cate_top_transaction("./transaction/all_cate_top10_transaction_simplified_4.csv")
     # concate_all_cate_top_transaction("./transaction/all_cate_top10_transaction/", "./transaction/all_cate_top10_transaction_simplified.csv")

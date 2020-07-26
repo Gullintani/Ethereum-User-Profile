@@ -7,6 +7,9 @@ import matplotlib as mpl
 from mpl_toolkits.mplot3d import Axes3D
 from math import pi
 
+def transaction_graph(file_path:str):
+    return
+
 def database_visualization(file_path:str):
     df = pd.read_csv(file_path)
     print(df["category"].value_counts)

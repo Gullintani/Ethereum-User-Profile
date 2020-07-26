@@ -27,8 +27,8 @@ def add_label(file_path:str, output_path:str, database_path:str, file_name:str):
                 from_title = df_database.loc[df_database['address'] == line[2], 'title'].iloc[0]
                 from_category = df_database.loc[df_database['address'] == line[2], 'category'].iloc[0]
             except:
-                from_title = "NA"
-                from_category = "NA"
+                from_title = line[2]
+                from_category = line[2]
         
         if line[3] == file_name[:-4]:
             to_title = "self"
@@ -38,8 +38,8 @@ def add_label(file_path:str, output_path:str, database_path:str, file_name:str):
                 to_title = df_database.loc[df_database['address'] == line[3], 'title'].iloc[0]
                 to_category = df_database.loc[df_database['address'] == line[3], 'category'].iloc[0]
             except:
-                to_title = "NA"
-                to_category = "NA"
+                to_title = line[3]
+                to_category = line[3]
         
         line = np.append(line, [from_title, to_title, from_category, to_category])
         new_array_file.append(line)

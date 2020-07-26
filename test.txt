@@ -1,1 +1,0 @@
-["self_value", "nan_value", "defi_cound", "exchange_value", "other_value", "gambling_value", "game_value", "marketplace_value", "social_value", "high-risk_value", "collectible_value"
