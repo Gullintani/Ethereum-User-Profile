@@ -152,8 +152,29 @@ def replace_NAN_in_title_attr(file_path:str, save_path:str):
     df.to_csv(save_path, index=False)
     return
 
+def translate_timestamp_in_labeled_data(file_path:str, save_path:str):
+    file_names = os.listdir(file_path)
+    total = len(file_names)
+    index = 1
+
+    for file_name in file_names:
+        df = pd.read_csv(file_path + file_name)
+        time_stamp_list = df["timeStamp"].values.tolist()
+        time_list = [pd.Timestamp(x, unit="s") for x in time_stamp_list]
+        df["Datetime"] = np.array(time_list)
+        df = df.set_index('Datetime')[['blockNumber', 'timeStamp', 'from', 'to', 'value',
+       'contractAddress', 'gasUsed', 'from_title', 'to_title', 'from_category',
+       'to_category']]
+        df.to_csv(save_path + file_name)
+
+        print(f"translated timestamp to Datetime and set as index { index }/{ total }")
+        index += 1
+    return
+
 if __name__ == '__main__':
-    replace_NAN_in_title_attr("./transaction/experiment/experiment.csv", "./transaction/experiment/experiment_replaced_NAN.csv")
+    translate_timestamp_in_labeled_data("./transaction/game/CryptokittyAuction_labeled/", "./transaction/game/CryptokittyAuction_labeled/")
+
+    # replace_NAN_in_title_attr("./transaction/experiment/experiment.csv", "./transaction/experiment/experiment_replaced_NAN.csv")
     
     # concate_labeled_transaction("./transaction/game/all_game_labeled/","./transaction/game/all_game_labeled.csv")
     # analysis_all_cate_top_transaction("./transaction/game/all_game_labeled.csv")

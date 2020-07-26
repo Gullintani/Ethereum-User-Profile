@@ -6,7 +6,7 @@ def extract_address_graph(address:str, file_path:str, save_path:str):
        'from_title':object, 'to_title':object, 'from_category':object, 'to_category':object})
     target = df.loc[(df["from"] == address)|(df["to"] == address)]
     target = target.fillna("NA")
-    save_path = save_path + "experiment.csv"
+    save_path = save_path + "experiment1.csv"
     target.to_csv(save_path, index = False)
 
     print(f"{ address } degree 1 records saved")
@@ -27,4 +27,4 @@ def extract_address_graph(address:str, file_path:str, save_path:str):
     return
 
 if __name__ == "__main__":
-    extract_address_graph("0x0b882f0fc7584ab6f894f097aacda9db1886c18e", "./transaction/game/all_game_labeled.csv", "./transaction/experiment/")
+    extract_address_graph("0x0a0143b63fb91dfdb9b874b854cfbc53af8707f3", "./transaction/game/all_game_labeled.csv", "./transaction/experiment/")

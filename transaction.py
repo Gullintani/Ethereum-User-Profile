@@ -45,6 +45,13 @@ def add_label(file_path:str, output_path:str, database_path:str, file_name:str):
         new_array_file.append(line)
 
     new_df_file = pd.DataFrame(np.array(new_array_file), index=None, columns=['blockNumber', 'timeStamp', 'from', 'to', 'value', 'contractAddress', 'gasUsed', 'from_title', 'to_title', 'from_category', 'to_category'])
+    
+    # translate timestamp to datetime and set it as index, untested
+    time_stamp_list = new_df_file["timeStamp"].values.tolist()
+    time_list = [pd.Timestamp(x, unit="s") for x in time_stamp_list]
+    new_df_file["Datetime"] = np.array(time_list)
+    new_df_file = new_df_file.set_index('Datetime')
+    
     new_df_file.to_csv(output_path)
     return
 
@@ -110,7 +117,7 @@ def wordcloud(file_path:str, attribute:str):
     plt.show()
     return
 
-def profile_labeled_data(file_path:str, save_path:str, data_source:str):
+def profile_labeled_data(file_path:str, save_path:str):
     store_list = []
     file_names = os.listdir(file_path)
     index = 1
@@ -123,10 +130,13 @@ def profile_labeled_data(file_path:str, save_path:str, data_source:str):
             # transaction count
             transaction_count = len(df)
             
+            time_stamp_list = df["timeStamp"].values.tolist()
+            time_list = [pd.Timestamp(x, unit="s") for x in time_stamp_list]
+
             # transaction per day
-            first_date = pd.Timestamp(df["timeStamp"].values[0], unit="s")
-            last_date = pd.Timestamp(df["timeStamp"].values[-1], unit="s")
-            day_between = (last_date - first_date).days
+            first_date = time_list[0]
+            day_between = (time_list[-1] - time_list[0]).days
+
             try:
                 transaction_per_day = round(transaction_count/day_between, 2)
             except:
@@ -207,19 +217,19 @@ def profile_labeled_data(file_path:str, save_path:str, data_source:str):
 
             # Collect source
             # source = file_name.split("_")[0]
-            source = data_source
+            # source = data_source
 
             # address, transaction count, transaction per day, from category, to category, from title, to title, transaction in/out, Average in value, Average out value Average gas, First transaction, Interact DApp Sequence
-            store_list.append([file_name[:-12], source, transaction_count, transaction_per_day, time_interval_mean, tiem_interval_median, time_interval_std, from_category_dict, to_category_dict, from_title_dict, to_title_dict, send_count, receive_count, send_value_mean, receive_value_mean, to_category_value_dict, average_gas, first_date, app_sequence])
+            store_list.append([file_name[:-12], transaction_count, transaction_per_day, time_interval_mean, tiem_interval_median, time_interval_std, from_category_dict, to_category_dict, from_title_dict, to_title_dict, send_count, receive_count, send_value_mean, receive_value_mean, to_category_value_dict, average_gas, first_date, app_sequence])
             print(f" { file_name } collected: { index }/ { total }")
             index += 1
         
         except:
             print("Error Happened")
-        # break
+        break
 
     store_array = np.array(store_list)
-    store_df = pd.DataFrame(store_array, index = None, columns=["address", "source", "transaction_count", "transaction_per_day", "time_interval_mean(min)", "time_interval_median(min)", "time_interval_std(min)", "from_cate", "to_cate", "from_title", "to_title", "send_count", "receive_count", "send_value_mean(eth)", "receive_value_mean(eth)", "value_dict(eth)", "average_gas", "first_date", "app_sequence"]).fillna(0)
+    store_df = pd.DataFrame(store_array, index = None, columns=["address", "transaction_count", "transaction_per_day", "time_interval_mean(min)", "time_interval_median(min)", "time_interval_std(min)", "from_cate", "to_cate", "from_title", "to_title", "send_count", "receive_count", "send_value_mean(eth)", "receive_value_mean(eth)", "value_dict(eth)", "average_gas", "first_date", "app_sequence"]).fillna(0)
     store_df.to_csv(save_path)
     print("================extraction done==================")
     return
@@ -316,7 +326,7 @@ if __name__ == '__main__':
     # batch_add_label("./contract_db/contract_transaction/", "./contract_db/contract_transaction_labeled/")
     # batch_add_label("./transaction/all_cate_top25_transaction/", "./transaction/all_cate_top25_transaction_labeled/")
 
-    profile_labeled_data("./transaction/all_cate_top25_transaction_labeled/", "./transaction/profiled/all_cate_top25_transaction_profiled.csv", "DAppContract")
+    profile_labeled_data("./transaction/game/CryptokittySiringAuction_labeled/", "./z_profiling_test.csv")
     # profile_labeled_data("./transaction/all_cate_top25_transaction/", "./transaction/profiled/Etheremon1200.csv", "Etheremon")
     
     # transaction_graph("./transaction/labeled/0x4da725d81911dc6b452a79eacbe8e2df7ab4ca49_labeled.csv", "bycount")
