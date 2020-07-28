@@ -132,6 +132,7 @@ def profile_labeled_data(file_path:str, save_path:str):
             
             time_stamp_list = df["timeStamp"].values.tolist()
             time_list = [pd.Timestamp(x, unit="s") for x in time_stamp_list]
+            
 
             # transaction per day
             first_date = time_list[0]
