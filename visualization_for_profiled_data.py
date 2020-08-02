@@ -93,7 +93,7 @@ def scatter_3d(file_path:str, attribute_list:list, html_save_path:str):
                     #     "#00ff0d",
                     #     "#fe0300",
                     # ],
-                    max_=color_maximum/8000,
+                    max_=color_maximum/100,
                     range_color=[
                         "#1710c0",
                         "#0b9df0",
@@ -109,7 +109,7 @@ def scatter_3d(file_path:str, attribute_list:list, html_save_path:str):
                     is_calculable=True,
                     dimension=4,
                     pos_bottom="20",
-                    max_=size_max/15000,
+                    max_=size_max/100,
                     range_size=[10, 50],
                 ),
             ]
@@ -193,6 +193,10 @@ if __name__ == '__main__':
     time_attr_list = ["transaction_count", "transaction_per_day", "time_interval_mean(min)", "time_interval_median(min)", "time_interval_std(min)"]
     new_columns_list = ["self_count", "nan_count", "defi_count", "exchanges_count", "other_count", "gambling_count", "games_count", "marketplaces_count", "social_count", "high-risk_count", "collectibles_count", "self_value", "nan_value", "defi_value", "exchanges_value", "other_value", "gambling_value", "games_value", "marketplaces_value", "social_value", "high-risk_value", "collectibles_value"]
     
+    # 19w address data
+    attr_list = ["send_count", "receive_count", "transaction_count", "time_interval_median(min)", "time_interval_std(min)"]
+    scatter_3d("./transaction/19w_profiled/user_all.csv", attr_list, "./html_output/19w/" + "-".join(attr_list) + "2.html")
+
     # scatter_2d("./ml_data/processed_sum_pca_2.csv", "./html_output/pca2_1.html")
 
     # Top 25 contract transaction info

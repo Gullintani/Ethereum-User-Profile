@@ -171,8 +171,46 @@ def translate_timestamp_in_labeled_data(file_path:str, save_path:str):
         index += 1
     return
 
+def add_extra_attribute_to_profiled_data(file_path:str, save_path:str):
+    df = pd.read_csv(file_path)
+    # attr need to process: from_cate, to_cate, from_title, to_title, value_dict
+    attr_list = ["from_cate", "to_cate", "from_title", "to_title", "value_dict(eth)"]
+
+    df["clean_from_cate"] = 0
+    df["clean_to_cate"] = 0
+    df["clean_from_title"] = 0
+    df["clean_to_title"] = 0
+    df["clean_value_dict(eth)"] = 0
+    df["clean_app_sequence"] = 0
+
+    total = len(df)
+    for index, row in df.iterrows():
+        for attr in attr_list:
+            temp_dict = eval(row[attr])
+            new_temp_dict = {}
+            new_temp_dict["unknown_addr"] = 0
+            for key, value in temp_dict.items():
+                if len(key) != 42:
+                    new_temp_dict[key] = value
+                else:
+                    if attr == "value_dict(eth)":
+                        new_temp_dict["unknown_addr"] = round(new_temp_dict["unknown_addr"] + float(value), 2)
+                    else:
+                        new_temp_dict["unknown_addr"] += int(value)
+            df.loc[index, "clean_"+attr] = str(new_temp_dict)
+
+        temp_app_sequence = eval(row["app_sequence"])
+        clean_app_sequence = [x for x in temp_app_sequence if len(x) != 42]
+        df.loc[index, "clean_app_sequence"] = str(clean_app_sequence)
+        
+        print(f"processed: {index}/{total}")
+
+    df.to_csv(save_path)
+    return
+
 if __name__ == '__main__':
-    translate_timestamp_in_labeled_data("./transaction/game/CryptokittyAuction_labeled/", "./transaction/game/CryptokittyAuction_labeled/")
+    add_extra_attribute_to_profiled_data("./transaction/19w_profiled/user_all.csv", "./transaction/19w_profiled/user_all_clean.csv")
+    # translate_timestamp_in_labeled_data("./transaction/game/CryptokittyAuction_labeled/", "./transaction/game/CryptokittyAuction_labeled/")
 
     # replace_NAN_in_title_attr("./transaction/experiment/experiment.csv", "./transaction/experiment/experiment_replaced_NAN.csv")
     
