@@ -208,8 +208,17 @@ def add_extra_attribute_to_profiled_data(file_path:str, save_path:str):
     df.to_csv(save_path)
     return
 
+def easy_concate(file_path:str, save_path:str):
+    df = pd.read_csv(file_path)
+    df.to_csv(save_path, index=False, header=False, mode='a+')
+    print(f"concate { file_path } into {save_path}.")
+    return
+
 if __name__ == '__main__':
-    add_extra_attribute_to_profiled_data("./transaction/19w_profiled/user_all.csv", "./transaction/19w_profiled/user_all_clean.csv")
+    df = pd.read_csv("./transaction/19w_profiled/clean_user_all.csv")
+    print(len(df))
+
+    # add_extra_attribute_to_profiled_data("./transaction/19w_profiled/user_all.csv", "./transaction/19w_profiled/user_all_clean.csv")
     # translate_timestamp_in_labeled_data("./transaction/game/CryptokittyAuction_labeled/", "./transaction/game/CryptokittyAuction_labeled/")
 
     # replace_NAN_in_title_attr("./transaction/experiment/experiment.csv", "./transaction/experiment/experiment_replaced_NAN.csv")
