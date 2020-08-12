@@ -194,8 +194,8 @@ if __name__ == '__main__':
     new_columns_list = ["self_count", "nan_count", "defi_count", "exchanges_count", "other_count", "gambling_count", "games_count", "marketplaces_count", "social_count", "high-risk_count", "collectibles_count", "self_value", "nan_value", "defi_value", "exchanges_value", "other_value", "gambling_value", "games_value", "marketplaces_value", "social_value", "high-risk_value", "collectibles_value"]
     
     # 19w address data
-    attr_list = ["send_count", "receive_count", "transaction_count", "time_interval_std(min)", "receive_value_mean(eth)"]
-    scatter_3d("./transaction/19w_profiled/clean_user_all.csv", attr_list, "./html_output/19w/" + "-".join(attr_list) + "2.html")
+    attr_list = ["time_interval_std(min)", "time_interval_std(min)", "transaction_count", "transaction_count", "receive_value_mean(eth)"]
+    scatter_3d("./transaction/19w/19w_profiled/clean_user_all.csv", attr_list, "./html_output/19w/" + "-".join(attr_list) + ".html")
 
     # scatter_2d("./ml_data/processed_sum_pca_2.csv", "./html_output/pca2_1.html")
 
