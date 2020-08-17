@@ -317,7 +317,33 @@ def apply_apriori(file_path:str):
     print(itemsets)
     return
 
+def add_usd(file_path:str):
+    price_df = pd.read_csv('./eth_price.csv', index_col="Date")
+    price_df.index = pd.to_datetime(price_df.index)
+
+    file_names = os.listdir(file_path)
+    process_index=0
+    total = len(file_names)
+    for file_name in file_names:
+        df = pd.read_csv(file_path + file_name)
+
+        df['value(usd)'] = '0'
+
+        # transform to eth and change index to datetime
+        df['Datetime'] = pd.to_datetime(df['Datetime'])
+        df = df.set_index('Datetime')
+        df['value(eth)'] = df['value'].apply(lambda x: int(x)/1000000000000000000)
+
+        for index, row in df.iterrows():
+            eth_price = price_df.loc[price_df.index.date == index, 'Value'].iloc[0]
+            df.loc[index, 'value(usd)'] = round(row['value(eth)'] * eth_price, 2)
+        
+        df.to_csv('./transaction/19w/address_usd/' + file_name)
+        print(f"processed: {process_index}/{total}")
+        process_index += 1
+
 if __name__ == '__main__':
+    add_usd("./transaction/19w/address/")
 
     # apply_apriori("./transaction/profiled/CryptokittySiringAuction4000.csv")
 
@@ -327,7 +353,7 @@ if __name__ == '__main__':
     # batch_add_label("./contract_db/contract_transaction/", "./contract_db/contract_transaction_labeled/")
     # batch_add_label("./transaction/all_cate_top25_transaction/", "./transaction/all_cate_top25_transaction_labeled/")
 
-    profile_labeled_data("./transaction/game/CryptokittySiringAuction_labeled/", "./z_profiling_test.csv")
+    # profile_labeled_data("./transaction/game/CryptokittySiringAuction_labeled/", "./z_profiling_test.csv")
     # profile_labeled_data("./transaction/all_cate_top25_transaction/", "./transaction/profiled/Etheremon1200.csv", "Etheremon")
     
     # transaction_graph("./transaction/labeled/0x4da725d81911dc6b452a79eacbe8e2df7ab4ca49_labeled.csv", "bycount")

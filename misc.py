@@ -211,7 +211,7 @@ def add_extra_attribute_to_profiled_data(file_path:str, save_path:str):
 def easy_concate(file_path:str, save_path:str):
     df = pd.read_csv(file_path)
     df.to_csv(save_path, index=False, header=False, mode='a+')
-    print(f"concate { file_path } into {save_path}.")
+    # print(f"concate { file_path } into {save_path}.")
     return
 
 def add_user_label(file_path:str):
@@ -219,7 +219,13 @@ def add_user_label(file_path:str):
     return
 
 if __name__ == '__main__':
-    
+    file_names = os.listdir("./transaction/19w/address_usd/")
+    index = 0
+    total = len(file_names)
+    for file_name in file_names:
+        easy_concate("./transaction/19w/address_usd/" + file_name, "./transaction/19w/address_usd_all.csv")
+        print(f"processed: {index}/{total}")
+        index+=1
 
     # add_extra_attribute_to_profiled_data("./transaction/19w_profiled/user_all.csv", "./transaction/19w_profiled/user_all_clean.csv")
     # translate_timestamp_in_labeled_data("./transaction/game/CryptokittyAuction_labeled/", "./transaction/game/CryptokittyAuction_labeled/")
