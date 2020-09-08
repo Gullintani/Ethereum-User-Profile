@@ -120,7 +120,7 @@ def scatter_3d(file_path:str, attribute_list:list, html_save_path:str):
 def word_cloud(file_path:str, html_save_path:str):
     df = pd.read_csv(file_path)
     # send title
-    send_dict_list = df["to_title"].values
+    send_dict_list = df["clean_to_title"].values
     send_store_dict = {}
     for send_dict_str in send_dict_list:
         send_dict = eval(send_dict_str)
@@ -134,7 +134,7 @@ def word_cloud(file_path:str, html_save_path:str):
         send_data_list.append((key, str(value)))
     
     # receive title
-    receive_dict_list = df["from_title"].values
+    receive_dict_list = df["clean_from_title"].values
     receive_store_dict = {}
     for receive_dict_str in receive_dict_list:
         receive_dict = eval(receive_dict_str)
@@ -147,7 +147,6 @@ def word_cloud(file_path:str, html_save_path:str):
     for key, value in receive_store_dict.items():
         receive_data_list.append((key, str(value)))
 
-    print(send_store_dict)
 
     send_wordcloud = (
         WordCloud(
@@ -158,7 +157,7 @@ def word_cloud(file_path:str, html_save_path:str):
                 theme = "white"
             )
         )
-        .add(series_name="Send DApps", data_pair=send_data_list, word_size_range=[6, 66])
+        .add(series_name="Send DApps", data_pair=send_data_list, word_size_range=[12, 66], shape='circle',textstyle_opts=())
         .set_global_opts(
             title_opts=opts.TitleOpts(
                 title="Send to DApp Title Wordcloud", title_textstyle_opts=opts.TextStyleOpts(font_size=23)
@@ -177,7 +176,7 @@ def word_cloud(file_path:str, html_save_path:str):
                 theme = "white"
             )
         )
-        .add(series_name="Send DApps", data_pair=receive_data_list, word_size_range=[6, 66])
+        .add(series_name="Send DApps", data_pair=receive_data_list, word_size_range=[6, 66], shape='circle')
         .set_global_opts(
             title_opts=opts.TitleOpts(
                 title="Receive from DApp Title Wordcloud", title_textstyle_opts=opts.TextStyleOpts(font_size=23)
@@ -195,7 +194,7 @@ if __name__ == '__main__':
     
     # 19w address data
     attr_list = ["time_interval_std(min)", "time_interval_std(min)", "transaction_count", "transaction_count", "receive_value_mean(eth)"]
-    scatter_3d("./transaction/19w/19w_profiled/clean_user_all.csv", attr_list, "./html_output/19w/" + "-".join(attr_list) + ".html")
+    # scatter_3d("./transaction/19w/19w_profiled/clean_user_all.csv", attr_list, "./html_output/19w/" + "-".join(attr_list) + ".html")
 
     # scatter_2d("./ml_data/processed_sum_pca_2.csv", "./html_output/pca2_1.html")
 
@@ -213,4 +212,4 @@ if __name__ == '__main__':
     # scatter_3d("./further_mined_sum.csv", ["send_count", "receive_count", "transaction_count", "transaction_interval_cluster_label", "time_interval_std(min)"], "./html_output/time_interval_cluster_result_2.html")
     # scatter_3d("./further_mined_sum_std.csv", ["send_count", "receive_count", "transaction_count", "time_interval_median(min)", "send_value_mean(eth)"], "./html_output/time_interval_cluster_result_3.html")
     # scatter_3d("./transaction/profiled/top10000.csv", ["send_count", "receive_count", "transaction_count", "time_interval_median(min)", "send_value_mean(eth)"], "./html_output/scatter_top10000.html")
-    # word_cloud("./transaction/profiled/sum.csv", "./html_output/")
+    word_cloud("./temp_utility.csv", "./html_output/utility/")

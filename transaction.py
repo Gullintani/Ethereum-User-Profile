@@ -7,6 +7,7 @@ import matplotlib as mpl
 from efficient_apriori import apriori
 from wordcloud import WordCloud
 from mpl_toolkits.mplot3d import Axes3D
+import random
 
 def tag_user(file_path:str, save_path:str):
     
@@ -108,11 +109,38 @@ def transaction_graph(file_path:str, graph_param:str = "bycount"):
     return 0
 
 def wordcloud(file_path:str, attribute:str):
+    translation_df = pd.read_csv('./contract_db/database.csv')
+
+    def grey_color_func(word, font_size, position, orientation, random_state=None, **kwargs):
+        try:
+            category = translation_df.loc[translation_df['title']==word, 'category'].values[0]
+        except:
+            return "hsl(121, 100%%, %d%%)" % 40
+        if category in ['games', 'gambling', 'collectibles']:
+            return "hsl(38, 100%%, %d%%)" % 50
+        elif category in ['marketplaces', 'social', 'other']:
+            return "hsl(276, 100%%, %d%%)" % 50
+        elif category in ['defi', 'high-risk', 'exchanges']:
+            return "hsl(197, 100%%, %d%%)" % 50
+
     df = pd.read_csv(file_path)
-    word_list = df[attribute].values.tolist()
-    word_string = " ".join(word_list)
-    wordcloud = WordCloud(background_color="white",width=800, height=460, margin=2, min_font_size=4, scale=20, colormap="cool").generate(word_string)
-    plt.imshow(wordcloud)
+    word_dict = {}
+    for index, row in df.iterrows():
+        try:
+            app_dict = eval(row["clean_to_title"])
+        except:
+            continue
+        for key, value in app_dict.items():
+            if key in word_dict.keys():
+                word_dict[key] += value
+            else:
+                word_dict[key] = value
+    del word_dict['unknown_addr']
+    del word_dict['self']
+
+    wordcloud = WordCloud(background_color="white",width=1000, height=1000).generate_from_frequencies(word_dict)
+    plt.imshow(wordcloud.recolor(color_func=grey_color_func, random_state=3))
+    wordcloud.to_file(f"./wordcloud_{attribute}.png")
     plt.axis("off")
     plt.show()
     return
@@ -343,7 +371,7 @@ def add_usd(file_path:str):
         process_index += 1
 
 if __name__ == '__main__':
-    add_usd("./transaction/19w/address/")
+    # add_usd("./transaction/19w/address/")
 
     # apply_apriori("./transaction/profiled/CryptokittySiringAuction4000.csv")
 
@@ -358,4 +386,4 @@ if __name__ == '__main__':
     
     # transaction_graph("./transaction/labeled/0x4da725d81911dc6b452a79eacbe8e2df7ab4ca49_labeled.csv", "bycount")
     # composition_graph("./transaction/labeled/0xf165d353abddb7cb00052d610254249fcc12a8c7_labeled.csv", "_title")
-    # wordcloud("./transaction/labeled/0x4da725d81911dc6b452a79eacbe8e2df7ab4ca49_labeled.csv", "From_title")
+    wordcloud("./temp_finance.csv", "finance_square")
