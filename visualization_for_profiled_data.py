@@ -194,7 +194,7 @@ if __name__ == '__main__':
     
     # 19w address data
     attr_list = ["time_interval_std(min)", "time_interval_std(min)", "transaction_count", "transaction_count", "receive_value_mean(eth)"]
-    # scatter_3d("./transaction/19w/19w_profiled/clean_user_all.csv", attr_list, "./html_output/19w/" + "-".join(attr_list) + ".html")
+    scatter_3d("./transaction/19w/19w_profiled/clean_user_all.csv", attr_list, "./html_output/19w/" + "-".join(attr_list) + ".html")
 
     # scatter_2d("./ml_data/processed_sum_pca_2.csv", "./html_output/pca2_1.html")
 

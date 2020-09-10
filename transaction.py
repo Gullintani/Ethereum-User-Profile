@@ -138,6 +138,9 @@ def wordcloud(file_path:str, attribute:str):
     del word_dict['unknown_addr']
     del word_dict['self']
 
+    word_df = pd.DataFrame(word_dict.items(), columns=['Title', 'Value'])
+    print(word_df.describe())
+
     wordcloud = WordCloud(background_color="white",width=1000, height=1000).generate_from_frequencies(word_dict)
     plt.imshow(wordcloud.recolor(color_func=grey_color_func, random_state=3))
     wordcloud.to_file(f"./wordcloud_{attribute}.png")
